@@ -5,34 +5,37 @@ from selenium.webdriver.common.keys import Keys
 from scrape_table_all import scrape_table
 from return_dates import return_dates
 
-#Open the link
-browser = webdriver.Chrome()
+# Open the link
+PATH = "/Users/prajwalshrestha/Desktop/PythonApp/thesis/web-scrapers/sharesansar/chromedriver"
+browser = webdriver.Chrome(PATH)
 browser.maximize_window()
 browser.get("https://www.sharesansar.com/today-share-price")
-#Select the type of data to scrape
-
-#Select Commercial Bank
-searchBar=browser.find_element_by_id('sector')
+# Select the type of data to scrape
+searchBar = browser.find_element_by_id('sector')
+browser.implicitly_wait(20)
+# Select Commercial Bank
 searchBar.send_keys('Commercial Bank')
 
-sdate = date(YYYY, MM, DD)
-edate = date(YYYY, MM, DD)
-dates = return_dates(sdate,edate)
+sdate = date(2020, 3, 23)
+edate = date(2021, 5, 13)
+dates = return_dates(sdate, edate)
 
 
 for day in dates:
-    #Enter the date
+    # Enter the date
     date_box = browser.find_elements_by_id('fromdate')
     date_box[0].clear()
     date_box[0].send_keys(day)
-    #Click Search
-    searchBar=browser.find_element_by_id('btn_todayshareprice_submit')
+    # Click Search
+    searchBar = browser.find_element_by_id('btn_todayshareprice_submit')
     searchBar.click()
-    time.sleep(3) #Needed for this sites
+    time.sleep(3)
+    # Needed for this sites
     searchBar.send_keys(Keys.ENTER)
-    time.sleep(8) #Wait for data to show up longer wait time ensures data has loaded before scraping begins
-    #Scrape the table
+    # Wait for data to show up longer wait time ensures data has loaded before scraping begins
+    time.sleep(8)
+    # Scrape the table
     html = browser.page_source
-    scrape_table(data=html,date=day)
+    scrape_table(data=html, date=day)
 
 browser.close()
